@@ -88,10 +88,27 @@ app.get("/game/:id", (req, res) => {
   let rawId = req.params.id;
   if (!isNaN(rawId)) {
     let id = parseInt(rawId);
+    let HATEOAS = [
+      {
+        href:`http://localhost:1234/game/${id}`,
+        method: "DELETE",
+        rel: "delete_game",
+      },
+      {
+        href:`http://localhost:1234/game/${id}`,
+        method: "GET",
+        rel: "get_game",
+      },
+      {
+        href:`http://localhost:1234/games`,
+        method: "GET",
+        rel: "get_all_games",
+      },
+    ];
     let game = mockDB.games.find(game => game.id === id);
     if (game) {
       res.statusCode = 200;
-      res.json(game);
+      res.json({game: game, _links:HATEOAS});
     } else {
       res.sendStatus(404);
     }
